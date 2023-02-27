@@ -1,0 +1,261 @@
+/*******************************************************************
+Program: Describing the prevalence of heart disease risk inhibitors among Latinos and non-Latinos. 
+Programmer: Jesse David Lafarga
+********************************************************************/
+Options pageno=1;
+Options Formdlim="-";
+Options Fmtsearch=(Folder);
+libname Folder '/home/u59586996/Jesse/Epi 207';
+/*****************************************
+ Variables we will keep from the dataset 
+******************************************/
+Data Folder.adult1;
+Set Folder.adult;
+Keep AE24 AB34 AD41W MODACTLE MODPA AE25 AE27 SRH SRAGE_P 
+AHEDUC HHSIZE_P AK22_P AB1 SMKCUR AD38W AD41W rakedw0 RAKEDW1-RAKEDW80;
+Run;
+/*Formating Variables*/
+Proc Format Library=Folder;
+Value agefmt   1 = "18–34 years"
+               2 = "35–49 years"
+			   3 = "50–64 years"
+               4 = ">=65 years";
+Value edufmt   1 = "<High school"
+               2 = "High school"
+			   3 = "Some college"
+               4 = ">=College";
+Value mvpafmt  1 = "0 days/week"
+               2 = "1-3 days/week"
+			   3 = ">=4 days/week";
+Value SRHFMT   1 = "Yes"
+               2 = "No";
+Value fpl_cfmt 4 = ">300%" 
+               3 = "201–300%"
+               2 = "101–200%"
+               1 = "<=100%";
+Value wlkfmt   1 = "0–2 times/week"
+               2 = "3–5 times/week"
+			   3 = ">=6 times/week";
+Value mvpafmt  1 = "0 days/week"
+               2 = "1-3 days/week"
+			   3 = ">=4 days/week";
+Value AE24fmt  1 = "Yes"
+			   2 = "No";               
+Run; 
+/*Recoding Variables*/
+Data Folder.adult1;
+Set Folder.adult1;
+wlk=.;
+If AD38W=-1 Then AD38W=0;
+If AD41W=-1 Then AD41W=0;
+If 0<=(AD38W+AD41W)<=2  Then wlk=1;
+If 3<=(AD38W+AD41W)<=5  Then wlk=2;
+If (AD38W+AD41W)>=6     Then wlk=3;
+mvpa=.;
+If AE27=-1 Then AE27=0;
+If AE25=-1 Then AE25=0;
+If (AE27+AE25)=0     Then mvpa=1;
+If 1<=(AE27+AE25)<=3 Then mvpa=2;
+If (AE27+AE25)>=4    Then mvpa=3;
+age=.;
+If 18<=SRAGE_P<=34 Then age=1;
+If 35<=SRAGE_P<=49 Then age=2;
+If 50<=SRAGE_P<=64 Then age=3;
+If SRAGE_P>=65     Then age=4;
+edu=.;
+If AHEDUC=1 or AHEDUC=2 or AHEDUC=91             Then edu=1;
+If AHEDUC=3                                      Then edu=2;
+If AHEDUC=4 or AHEDUC=5 or AHEDUC=6              Then edu=3;
+If AHEDUC=7 or AHEDUC=8 or AHEDUC=9 or AHEDUC=10 Then edu=4;
+fpl_c=.;
+If HHSIZE_P=1 and (AK22_P/10830)<=1   Then fpl_c=1;
+If HHSIZE_P=1 and 1<(AK22_P/10830)<=2 Then fpl_c=2;
+If HHSIZE_P=1 and 2<(AK22_P/10830)<=3 Then fpl_c=3;
+If HHSIZE_P=1 and (AK22_P/10830)>3    Then fpl_c=4;
+
+If HHSIZE_P=2 and (AK22_P/14570)<=1   Then fpl_c=1;
+If HHSIZE_P=2 and 1<(AK22_P/14570)<=2 Then fpl_c=2;
+If HHSIZE_P=2 and 2<(AK22_P/14570)<=3 Then fpl_c=3;
+If HHSIZE_P=2 and (AK22_P/14570)>3    Then fpl_c=4;
+
+If HHSIZE_P=3 and (AK22_P/18310)<=1   Then fpl_c=1;
+If HHSIZE_P=3 and 1<(AK22_P/18310)<=2 Then fpl_c=2;
+If HHSIZE_P=3 and 2<(AK22_P/18310)<=3 Then fpl_c=3;
+If HHSIZE_P=3 and (AK22_P/18310)>3    Then fpl_c=4;
+
+If HHSIZE_P=4 and (AK22_P/22050)<=1   Then fpl_c=1;
+If HHSIZE_P=4 and 1<(AK22_P/22050)<=2 Then fpl_c=2;
+If HHSIZE_P=4 and 2<(AK22_P/22050)<=3 Then fpl_c=3;
+If HHSIZE_P=4 and (AK22_P/22050)>3    Then fpl_c=4;
+
+If HHSIZE_P=5 and (AK22_P/25790)<=1   Then fpl_c=1;
+If HHSIZE_P=5 and 1<(AK22_P/25790)<=2 Then fpl_c=2;
+If HHSIZE_P=5 and 2<(AK22_P/25790)<=3 Then fpl_c=3;
+If HHSIZE_P=5 and (AK22_P/25790)>3    Then fpl_c=4;
+
+If HHSIZE_P=6 and (AK22_P/29530)<=1   Then fpl_c=1;
+If HHSIZE_P=6 and 1<(AK22_P/29530)<=2 Then fpl_c=2;
+If HHSIZE_P=6 and 2<(AK22_P/29530)<=3 Then fpl_c=3;
+If HHSIZE_P=6 and (AK22_P/29530)>3    Then fpl_c=4;
+
+If HHSIZE_P=7 and (AK22_P/33270)<=1   Then fpl_c=1;
+If HHSIZE_P=7 and 1<(AK22_P/33270)<=2 Then fpl_c=2;
+If HHSIZE_P=7 and 2<(AK22_P/33270)<=3 Then fpl_c=3;
+If HHSIZE_P=7 and (AK22_P/33270)>3    Then fpl_c=4;
+
+If HHSIZE_P=8 and (AK22_P/37010)<=1   Then fpl_c=1;
+If HHSIZE_P=8 and 1<(AK22_P/37010)<=2 Then fpl_c=2;
+If HHSIZE_P=8 and 2<(AK22_P/37010)<=3 Then fpl_c=3;
+If HHSIZE_P=8 and (AK22_P/37010)>3    Then fpl_c=4;
+
+If HHSIZE_P=9 and (AK22_P/40750)<=1   Then fpl_c=1;
+If HHSIZE_P=9 and 1<(AK22_P/40750)<=2 Then fpl_c=2;
+If HHSIZE_P=9 and 2<(AK22_P/40750)<=3 Then fpl_c=3;
+If HHSIZE_P=9 and (AK22_P/40750)>3    Then fpl_c=4;
+
+If HHSIZE_P=10 and (AK22_P/44490)<=1   Then fpl_c=1;
+If HHSIZE_P=10 and 1<(AK22_P/44490)<=2 Then fpl_c=2;
+If HHSIZE_P=10 and 2<(AK22_P/44490)<=3 Then fpl_c=3;
+If HHSIZE_P=10 and (AK22_P/44490)>3    Then fpl_c=4;
+
+Label age = 'Catergorical age'
+      edu = 'Educational attainment'
+      SRH = 'Latino Ethnicity'
+    FPL_C = 'Household income: Federal Poverty Level'
+     wlk  = 'Weekly times of walking'
+     mvpa = 'Weekly days of doing moderate or vigorous physical activities'
+     AE24 = 'Hard/vigorous exercise in past 7 days ';
+Run;
+/*Table #1*/
+Proc Surveyfreq Data=Folder.adult1 Varmethod=Jackknife;
+Weight rakedw0;
+Repweight rakedw1-rakedw80/Jkcoefs=1;
+Tables AGE*SRH EDU*SRH FPL_C*SRH AB1*SRH SMKCUR*SRH;
+Format SRH SRHFMT. AGE agefmt. Edu Edufmt. FPL_C fpl_cfmt. AB1 AB1X. SMKCUR SMKCURF. ;
+Run;
+/*Table #2*/
+Proc Surveyfreq Data=Folder.adult1 Varmethod=Jackknife;
+Weight rakedw0;
+Repweight rakedw1-rakedw80/Jkcoefs=1;
+Tables wlk*SRH AE24*SRH MVPA*SRH;
+Format SRH SRHFMT. AE24 AE24FMT. MVPA mvpafmt. wlk wlkFMT. ;
+Run;
+/*Creat Binary Variables*/
+Data Folder.adult2;
+Set Folder.adult1;
+wlk_b=.;
+If wlk=1 Then wlk_b=1;
+If wlk=2 or wlk=3 Then wlk_b=0;
+mvpa_b=.;
+If mvpa=1 Then mvpa_b=1;
+If mvpa=2 or mvpa=3 Then mvpa_b=0;
+Run;
+
+/***************
+Unadjusted model
+****************/
+
+/*Walking: Weekly times of walking*/
+Proc Surveylogistic Data=Folder.adult2 Varmethod=Jackknife;
+Weight rakedw0;
+Repweight rakedw1-rakedw80/Jkcoefs=1;
+Class SRH (Ref="No")
+wlk_b (Ref="0");
+Model wlk_b = SRH;
+Format SRH SRHFMT.;
+Run;
+/*Hard Exercise: Hard/vigorous exercise in past 7 days*/
+Proc Surveylogistic Data=Folder.adult2 Varmethod=Jackknife;
+Weight rakedw0;
+Repweight rakedw1-rakedw80/Jkcoefs=1;
+Class SRH (Ref="No")
+mvpa_b (Ref="0");
+Model mvpa_b = SRH;
+Format SRH SRHFMT.;
+Run;
+/*Moderate Exercise: Weekly days of doing moderate or vigorous physical activities*/
+Proc Surveylogistic Data=Folder.adult2 Varmethod=Jackknife;
+Weight rakedw0;
+Repweight rakedw1-rakedw80/Jkcoefs=1;
+Class SRH (Ref="No")
+AE24 (Ref="1");
+Model AE24 = SRH;
+Format SRH SRHFMT.;
+Run;
+
+/**********************
+Model 1: Age adjustment
+***********************/
+
+/*Walking: Weekly times of walking*/
+Proc Surveylogistic Data=Folder.adult2 Varmethod=Jackknife;
+Weight rakedw0;
+Repweight rakedw1-rakedw80/Jkcoefs=1;
+Class SRH (Ref="No")
+      age (Ref="18–34 years")
+      wlk_b (Ref="0");
+Model wlk_b = SRH age;
+Format SRH SRHFMT. age agefmt.;
+Run;
+/*Hard Exercise: Hard/vigorous exercise in past 7 days*/
+Proc Surveylogistic Data=Folder.adult2 Varmethod=Jackknife;
+Weight rakedw0;
+Repweight rakedw1-rakedw80/Jkcoefs=1;
+Class SRH (Ref="No")
+      age (Ref="18–34 years")
+      mvpa_b (Ref="0");
+Model mvpa_b = SRH age;
+Format SRH SRHFMT. age agefmt.;
+Run;
+/*Moderate Exercise: Weekly days of doing moderate or vigorous physical activities*/
+Proc Surveylogistic Data=Folder.adult2 Varmethod=Jackknife;
+Weight rakedw0;
+Repweight rakedw1-rakedw80/Jkcoefs=1;
+Class SRH (Ref="No")
+      age (Ref="18–34 years")
+      AE24 (Ref="1");
+Model AE24 = SRH age;
+Format SRH SRHFMT. age agefmt.;
+Run;
+
+/*****************************************************
+Model 2: adjusted for age, household income, education
+******************************************************/
+
+/*Walking: Weekly times of walking*/
+Proc Surveylogistic Data=Folder.adult2 Varmethod=Jackknife;
+Weight rakedw0;
+Repweight rakedw1-rakedw80/Jkcoefs=1;
+Class SRH (Ref="No")
+      age (Ref="18–34 years")
+	  fpl_c (Ref=">300%")
+	  edu (Ref="High school")
+      wlk_b (Ref="0");
+Model wlk_b = SRH age fpl_c edu ;
+Format SRH SRHFMT. age agefmt. fpl_c fpl_cfmt. edu edufmt.;
+Run;
+/*Hard Exercise: Hard/vigorous exercise in past 7 days*/
+Proc Surveylogistic Data=Folder.adult2 Varmethod=Jackknife;
+Weight rakedw0;
+Repweight rakedw1-rakedw80/Jkcoefs=1;
+Class SRH (Ref="No")
+      age (Ref="18–34 years")
+	  fpl_c (Ref=">300%")
+	  edu (Ref="High school")
+      mvpa_b (Ref="0");
+Model mvpa_b = SRH age fpl_c edu;
+Format SRH SRHFMT. age agefmt. fpl_c fpl_cfmt. edu edufmt.;
+Run;
+/*Moderate Exercise: Weekly days of doing moderate or vigorous physical activities*/
+Proc Surveylogistic Data=Folder.adult2 Varmethod=Jackknife;
+Weight rakedw0;
+Repweight rakedw1-rakedw80/Jkcoefs=1;
+Class SRH (Ref="No")
+      age (Ref="18–34 years")
+	  fpl_c (Ref=">300%")
+	  edu (Ref="High school")
+      AE24 (Ref="1");
+Model AE24 = SRH age fpl_c edu;
+Format SRH SRHFMT. age agefmt. fpl_c fpl_cfmt. edu edufmt.;
+Run;
+
