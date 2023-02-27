@@ -1,2 +1,1 @@
-# 207-Project-
-207 Project File SAS
+The code below aims to analyze the prevalence of heart disease risk inhibitors among Latino and non-Latino populations in California using various models. The target population is California residents, including both Latino and non-Latino groups. The study design utilizes a cross-sectional approach and draws data from the publicly available 2009 Chis dataset.
