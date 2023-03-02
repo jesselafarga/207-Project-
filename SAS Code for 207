@@ -1,6 +1,6 @@
 /*******************************************************************
 Program: Describing the prevalence of heart disease risk inhibitors among Latinos and non-Latinos. 
-Programmer: Jesse David Lafarga
+Programmer: 
 ********************************************************************/
 Options pageno=1;
 Options Formdlim="-";
